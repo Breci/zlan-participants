@@ -13,13 +13,23 @@ function chunkArray(myArray, chunk_size) {
   return tempArray;
 }
 
+let token = null;
+
 async function getAuthToken() {
-  // TODO optimize that
-  return axios
+  if (token && token.expired_at * 1000 > Date.now() - 1000 * 60 * 60) {
+    return token.access_token;
+  }
+  const t = await axios
     .post(
       `https://id.twitch.tv/oauth2/token?client_id=${process.env.TWITCH_CLIENT_ID}&client_secret=${process.env.TWITCH_SECRET}&grant_type=client_credentials`
     )
-    .then((resp) => resp.data.access_token);
+    .then((resp) => resp.data);
+
+  token = {
+    ...t,
+    expired_at: Date.now() + t.expires_in * 1000,
+  };
+  return t.access_token;
 }
 
 export async function getLiveStreams(streamsId) {
@@ -44,6 +54,10 @@ export async function getLiveStreams(streamsId) {
   ).flat();
   return streams;
 }
+
+// TODO build a cache for users to avoid too many refetch
+const userInfoCache = {};
+
 export async function getUsersInfo(streamsId) {
   const token = await getAuthToken();
 
