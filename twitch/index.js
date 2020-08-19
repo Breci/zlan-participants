@@ -42,6 +42,7 @@ export async function getLiveStreams(streamsId) {
           .get("https://api.twitch.tv/helix/streams", {
             params: {
               user_login: ids,
+              first: 100,
             },
             headers: {
               Authorization: `Bearer ${token}`,
@@ -68,6 +69,7 @@ export async function getUsersInfo(streamsId) {
           .get("https://api.twitch.tv/helix/users", {
             params: {
               id: ids,
+              first: 100,
             },
             headers: {
               Authorization: `Bearer ${token}`,

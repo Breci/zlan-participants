@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import { getLiveStreams, getUsersInfo } from "../twitch";
 import { getStreamers } from "../utils";
-import { useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "preact/hooks";
 import Switch from "../ui/Switch";
 
 const ZLAN_GAMES = [
@@ -17,6 +17,8 @@ const ZLAN_GAMES = [
   "493036", // worms
 ];
 
+const ZLAN_GAME_FILTER_KEY = "ZLAN_GAME_FILTER";
+
 export default function Home({ streams, users }) {
   const usersInfo = useMemo(() => {
     return streams.map((stream) => {
@@ -28,6 +30,14 @@ export default function Home({ streams, users }) {
   }, [streams, users]);
 
   const [filterByZLANGames, setFilterByZLANGames] = useState(false);
+
+  useEffect(() => {
+    setFilterByZLANGames(
+      localStorage &&
+        localStorage.getItem(ZLAN_GAME_FILTER_KEY) &&
+        localStorage.getItem(ZLAN_GAME_FILTER_KEY) === "true"
+    );
+  }, []);
 
   const filteredUserInfo = useMemo(() => {
     if (!filterByZLANGames) return usersInfo;
@@ -54,8 +64,15 @@ export default function Home({ streams, users }) {
               value={filterByZLANGames}
               onChange={(e) => {
                 setFilterByZLANGames(e.target.checked);
+                if (localStorage) {
+                  localStorage.setItem(
+                    ZLAN_GAME_FILTER_KEY,
+                    e.target.checked.toString()
+                  );
+                }
               }}
             />
+            {filterByZLANGames.toString()}
           </div>
         </div>
 
