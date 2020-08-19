@@ -8,8 +8,17 @@
     "start": "next start"
   },
   "dependencies": {
+    "axios": "^0.19.2",
     "next": "9.5.2",
-    "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "preact": "^10.4.7",
+    "preact-render-to-string": "^5.1.10",
+    "react": "github:preact-compat/react#1.0.0",
+    "react-dom": "github:preact-compat/react-dom#1.0.0",
+    "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1",
+    "sass": "^1.26.10"
+  },
+  "devDependencies": {
+    "@prefresh/next": "^0.4.0",
+    "react-refresh": "^0.8.3"
   }
 }
