@@ -29,6 +29,7 @@ export default function Home({ streams, users }) {
           {usersInfo.map((userInfo) => (
             <a
               target="_blank"
+              rel="noreferrer noopener"
               href={`https://www.twitch.tv/${userInfo.user.login}`}
             >
               <div
@@ -63,6 +64,7 @@ export default function Home({ streams, users }) {
       <footer className={styles.footer}>
         Créé par{" "}
         <a
+          rel="noreferrer noopener"
           href="https://www.twitter.com/Brecii"
           target="_blank"
           className={styles.logo}
