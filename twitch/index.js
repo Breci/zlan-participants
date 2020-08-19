@@ -57,14 +57,28 @@ export async function getLiveStreams(streamsId) {
 }
 
 // TODO build a cache for users to avoid too many refetch
-const userInfoCache = {};
+const userCache = {};
 
-export async function getUsersInfo(streamsId) {
+export async function getUsersInfo(usersId) {
   const token = await getAuthToken();
+
+  const usersFromCache = usersId.reduce((reducer, userId) => {
+    if (userCache[userId] && userCache[userId].expiresAt > Date.now()) {
+      return [...reducer, userCache[userId].data];
+    }
+    return reducer;
+  }, []);
 
   const users = (
     await Promise.all(
-      chunkArray(streamsId, 100).map((ids) =>
+      chunkArray(
+        usersId.filter(
+          (userId) =>
+            !userCache[userId] ||
+            (userCache[userId] && userCache[userId].expiresAt < Date.now())
+        ),
+        100
+      ).map((ids) =>
         axios
           .get("https://api.twitch.tv/helix/users", {
             params: {
@@ -80,24 +94,36 @@ export async function getUsersInfo(streamsId) {
       )
     )
   ).flat();
-  return users;
+
+  users.forEach((user) => {
+    userCache[user.id] = {
+      data: user,
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+    };
+  });
+
+  return [...usersFromCache, ...users];
 }
 
-// TODO set cache for games
 const gameCache = {};
 
 export async function getGames(gamesId) {
   const token = await getAuthToken();
   const gamesFromCache =
     gamesId.reduce((reducer, gameId) => {
-      if (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now()) {
+      if (gameCache[gameId] && gameCache[gameId].expiresAt > Date.now()) {
         return [...reducer, gameCache[gameId].data];
       }
+      return reducer;
     }, []) || [];
   const games = (
     await Promise.all(
       chunkArray(
-        gamesId.filter((gameId) => !gameCache[gameId]),
+        gamesId.filter(
+          (gameId) =>
+            !gameCache[gameId] ||
+            (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now())
+        ),
         100
       ).map((ids) =>
         axios
