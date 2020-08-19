@@ -9,7 +9,25 @@ class MyDocument extends Document {
   render() {
     return (
       <Html lang="fr">
-        <Head />
+        <Head>
+          <script
+            async
+            src="https://www.googletagmanager.com/gtag/js?id=UA-103158440-3"
+          ></script>
+          <script
+            dangerouslySetInnerHTML={{
+              __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'UA-103158440-3');
+        `,
+            }}
+          />
+
+          <link rel="icon" href="/favicon.ico" />
+          <meta http-equiv="refresh" content="300" />
+        </Head>
         <body>
           <Main />
           <NextScript />
