@@ -45,7 +45,6 @@ export default function Home({ streams, users, games }) {
     return usersInfo.filter((info) => ZLAN_GAMES.includes(info.stream.game_id));
   }, [usersInfo, filterByZLANGames]);
 
-  console.log(games);
   return (
     <div className={styles.container}>
       <Head>

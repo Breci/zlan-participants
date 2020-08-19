@@ -87,7 +87,6 @@ export async function getUsersInfo(streamsId) {
 
 export async function getGames(gamesId) {
   const token = await getAuthToken();
-  console.log({ gamesId });
   const games = (
     await Promise.all(
       chunkArray(gamesId, 100).map((ids) =>
