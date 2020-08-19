@@ -84,12 +84,22 @@ export async function getUsersInfo(streamsId) {
 }
 
 // TODO set cache for games
+const gameCache = {};
 
 export async function getGames(gamesId) {
   const token = await getAuthToken();
+  const gamesFromCache =
+    gamesId.reduce((reducer, gameId) => {
+      if (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now()) {
+        return [...reducer, gameCache[gameId].data];
+      }
+    }, []) || [];
   const games = (
     await Promise.all(
-      chunkArray(gamesId, 100).map((ids) =>
+      chunkArray(
+        gamesId.filter((gameId) => !gameCache[gameId]),
+        100
+      ).map((ids) =>
         axios
           .get("https://api.twitch.tv/helix/games", {
             params: {
@@ -104,5 +114,11 @@ export async function getGames(gamesId) {
       )
     )
   ).flat();
-  return games;
+  games.forEach((game) => {
+    gameCache[game.id] = {
+      data: game,
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+    };
+  });
+  return [...gamesFromCache, ...games];
 }
