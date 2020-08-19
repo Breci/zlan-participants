@@ -72,7 +72,6 @@ export default function Home({ streams, users }) {
                 }
               }}
             />
-            {filterByZLANGames.toString()}
           </div>
         </div>
 
