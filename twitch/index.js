@@ -82,3 +82,28 @@ export async function getUsersInfo(streamsId) {
   ).flat();
   return users;
 }
+
+// TODO set cache for games
+
+export async function getGames(gamesId) {
+  const token = await getAuthToken();
+  console.log({ gamesId });
+  const games = (
+    await Promise.all(
+      chunkArray(gamesId, 100).map((ids) =>
+        axios
+          .get("https://api.twitch.tv/helix/games", {
+            params: {
+              id: ids,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Client-ID": process.env.TWITCH_CLIENT_ID,
+            },
+          })
+          .then((resp) => resp.data.data)
+      )
+    )
+  ).flat();
+  return games;
+}
