@@ -1,0 +1,50 @@
+.label,.circle{
+  margin:0;
+  padding:0;
+  box-sizing: border-box;
+}
+
+.label {
+  cursor: pointer;
+  display: inline-flex;
+  position: relative;
+  align-items: center;
+  width: 2rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  position: relative;
+  padding-left: 0.25rem;
+  padding-right: 0.25rem;
+  border: solid 1px #0ce840;
+  transition: background-color 0.2s ease-in-out;
+
+  &.labelChecked{
+    background-color: #0ce840;
+  }
+  &.disabled {
+    opacity: 0.5;
+    cursor:default;
+  }
+
+  .input {
+    display: none;
+    & + .circle {
+      width: 0.75rem;
+      height: 0.75rem;
+      border-radius: 9999px;
+      transition: transform 0.3s cubic-bezier(0.59, 0.07, 0.63, 1.73),
+      background-color 0.2s ease-in-out;
+    }
+    &:not(:checked) + .circle {
+      background-color: #0ce840;
+    }
+
+    &:checked + .circle {
+      background-color: black;
+      transform: translateX(80%);
+    }
+    &:disabled + .circle{
+      opacity:0.5;
+    }
+  }
+}

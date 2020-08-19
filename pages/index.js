@@ -2,7 +2,20 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import { getLiveStreams, getUsersInfo } from "../twitch";
 import { getStreamers } from "../utils";
-import { useMemo } from "preact/hooks";
+import { useMemo, useState } from "preact/hooks";
+import Switch from "../ui/Switch";
+
+const ZLAN_GAMES = [
+  "512988", // AOE II
+  "492553", // CIV VI
+  "495764", // Golf it
+  "512086", // heave ho
+  "27471", // Minecraft
+  "506458", // overcooked 2
+  "493057", // PUBG
+  "28605", // shootmania
+  "493036", // worms
+];
 
 export default function Home({ streams, users }) {
   const usersInfo = useMemo(() => {
@@ -13,6 +26,15 @@ export default function Home({ streams, users }) {
       };
     });
   }, [streams, users]);
+
+  const [filterByZLANGames, setFilterByZLANGames] = useState(false);
+
+  const filteredUserInfo = useMemo(() => {
+    if (!filterByZLANGames) return usersInfo;
+
+    return usersInfo.filter((info) => ZLAN_GAMES.includes(info.stream.game_id));
+  }, [usersInfo, filterByZLANGames]);
+
   return (
     <div className={styles.container}>
       <Head>
@@ -23,10 +45,22 @@ export default function Home({ streams, users }) {
       <main className={styles.main}>
         <h1 className={styles.title}>ZLAN</h1>
 
-        <p className={styles.description}>Découvrez les participants</p>
+        <div className={styles.listHeader}>
+          <div className={styles.description}>Participants</div>
+          <div className={styles.filter}>
+            <span className={styles.filterText}>Jeux ZLAN</span>
+
+            <Switch
+              value={filterByZLANGames}
+              onChange={(e) => {
+                setFilterByZLANGames(e.target.checked);
+              }}
+            />
+          </div>
+        </div>
 
         <div className={styles.list}>
-          {usersInfo.map((userInfo) => (
+          {filteredUserInfo.map((userInfo) => (
             <a
               target="_blank"
               rel="noreferrer noopener"

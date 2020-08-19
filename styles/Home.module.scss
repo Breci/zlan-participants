@@ -9,6 +9,21 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  .listHeader{
+    width:100%;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5vw;
+    .filter{
+      font-size: 0.8em;
+      .filterText{
+        margin-right: 0.4em;
+        display: inline-block;
+      }
+    }
+  }
 }
 
 .main {
@@ -65,8 +80,7 @@
   font-size: 4rem;
 }
 
-.title,
-.description {
+.title{
   text-align: center;
 }
 
