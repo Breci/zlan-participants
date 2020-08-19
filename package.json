@@ -15,6 +15,7 @@
     "react": "github:preact-compat/react#1.0.0",
     "react-dom": "github:preact-compat/react-dom#1.0.0",
     "react-ssr-prepass": "npm:preact-ssr-prepass@^1.0.1",
+    "sanitize.css": "^11.0.1",
     "sass": "^1.26.10"
   },
   "devDependencies": {
