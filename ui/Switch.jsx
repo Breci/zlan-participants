@@ -1,19 +1,13 @@
 import styles from "./Switch.module.scss";
 
-const Switch = ({ className = "", value, onChange, ...restProps }) => {
+const Switch = ({ className = "", ...restProps }) => {
   return (
     <label
       className={`${styles.label} ${
-        value ? styles.labelChecked : ""
+        restProps.checked ? styles.labelChecked : ""
       } ${className}`}
     >
-      <input
-        type="checkbox"
-        className={styles.input}
-        value={value}
-        onChange={onChange}
-        {...restProps}
-      />
+      <input type="checkbox" className={styles.input} {...restProps} />
       <span className={styles.circle} />
     </label>
   );

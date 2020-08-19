@@ -61,7 +61,7 @@ export default function Home({ streams, users }) {
             <span className={styles.filterText}>Jeux ZLAN</span>
 
             <Switch
-              value={filterByZLANGames}
+              checked={filterByZLANGames}
               onChange={(e) => {
                 setFilterByZLANGames(e.target.checked);
                 if (localStorage) {
