@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@prefresh/next": "^0.4.0",
+    "prettier": "^2.0.5",
     "react-refresh": "^0.8.3"
   }
 }
