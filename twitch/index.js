@@ -116,35 +116,41 @@ export async function getGames(gamesId) {
       }
       return reducer;
     }, []) || [];
-  const games = (
-    await Promise.all(
-      chunkArray(
-        gamesId.filter(
-          (gameId) =>
-            !gameCache[gameId] ||
-            (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now())
-        ),
-        100
-      ).map((ids) =>
-        axios
-          .get("https://api.twitch.tv/helix/games", {
-            params: {
-              id: ids,
-            },
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Client-ID": process.env.TWITCH_CLIENT_ID,
-            },
-          })
-          .then((resp) => resp.data.data)
+  try {
+    const games = (
+      await Promise.all(
+        chunkArray(
+          gamesId.filter(
+            (gameId) =>
+              !gameCache[gameId] ||
+              (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now())
+          ),
+          100
+        ).map((ids) =>
+          axios
+            .get("https://api.twitch.tv/helix/games", {
+              params: {
+                id: ids,
+              },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Client-ID": process.env.TWITCH_CLIENT_ID,
+              },
+            })
+            .then((resp) => resp.data.data)
+        )
       )
-    )
-  ).flat();
-  games.forEach((game) => {
-    gameCache[game.id] = {
-      data: game,
-      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
-    };
-  });
-  return [...gamesFromCache, ...games];
+    ).flat();
+    games.forEach((game) => {
+      gameCache[game.id] = {
+        data: game,
+        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+      };
+    });
+    return [...gamesFromCache, ...games];
+  } catch (e) {
+    // safety if there is a problem on Twitch side
+    console.error(e);
+    return [];
+  }
 }
