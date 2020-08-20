@@ -32,31 +32,45 @@ async function getAuthToken() {
   return t.access_token;
 }
 
+const STREAM_CACHE_TTL = 1000 * 60 * 2; // 2 minutes
+
+let streamCache = [];
+let lastStreamCacheUpdate = 0;
+
 export async function getLiveStreams(streamsId) {
   const token = await getAuthToken();
+  if (Date.now() < lastStreamCacheUpdate + STREAM_CACHE_TTL) {
+    return streamCache;
+  }
 
-  const streams = (
-    await Promise.all(
-      chunkArray(streamsId, 100).map((ids) =>
-        axios
-          .get("https://api.twitch.tv/helix/streams", {
-            params: {
-              user_login: ids,
-              first: 100,
-            },
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Client-ID": process.env.TWITCH_CLIENT_ID,
-            },
-          })
-          .then((resp) => resp.data.data)
+  try {
+    const streams = (
+      await Promise.all(
+        chunkArray(streamsId, 100).map((ids) =>
+          axios
+            .get("https://api.twitch.tv/helix/streams", {
+              params: {
+                user_login: ids,
+                first: 100,
+              },
+              headers: {
+                Authorization: `Bearer ${token}`,
+                "Client-ID": process.env.TWITCH_CLIENT_ID,
+              },
+            })
+            .then((resp) => resp.data.data)
+        )
       )
-    )
-  ).flat();
-  return streams;
+    ).flat();
+    streamCache = streams;
+    lastStreamCacheUpdate = Date.now();
+    return streams;
+  } catch (e) {
+    console.error(e);
+    return [];
+  }
 }
 
-// TODO build a cache for users to avoid too many refetch
 const userCache = {};
 
 export async function getUsersInfo(usersId) {
@@ -116,41 +130,36 @@ export async function getGames(gamesId) {
       }
       return reducer;
     }, []) || [];
-  try {
-    const games = (
-      await Promise.all(
-        chunkArray(
-          gamesId.filter(
-            (gameId) =>
-              !gameCache[gameId] ||
-              (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now())
-          ),
-          100
-        ).map((ids) =>
-          axios
-            .get("https://api.twitch.tv/helix/games", {
-              params: {
-                id: ids,
-              },
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Client-ID": process.env.TWITCH_CLIENT_ID,
-              },
-            })
-            .then((resp) => resp.data.data)
-        )
+
+  const games = (
+    await Promise.all(
+      chunkArray(
+        gamesId.filter(
+          (gameId) =>
+            !gameCache[gameId] ||
+            (gameCache[gameId] && gameCache[gameId].expiresAt < Date.now())
+        ),
+        100
+      ).map((ids) =>
+        axios
+          .get("https://api.twitch.tv/helix/games", {
+            params: {
+              id: ids,
+            },
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Client-ID": process.env.TWITCH_CLIENT_ID,
+            },
+          })
+          .then((resp) => resp.data.data)
       )
-    ).flat();
-    games.forEach((game) => {
-      gameCache[game.id] = {
-        data: game,
-        expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
-      };
-    });
-    return [...gamesFromCache, ...games];
-  } catch (e) {
-    // safety if there is a problem on Twitch side
-    console.error(e);
-    return [];
-  }
+    )
+  ).flat();
+  games.forEach((game) => {
+    gameCache[game.id] = {
+      data: game,
+      expiresAt: Date.now() + 1000 * 60 * 60 * 24 * 30,
+    };
+  });
+  return [...gamesFromCache, ...games];
 }

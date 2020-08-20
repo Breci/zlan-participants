@@ -144,7 +144,7 @@ export async function getServerSideProps(context) {
   const gamesId = Array.from(new Set(streams.map((stream) => stream.game_id)));
   return {
     props: {
-      streams: await getLiveStreams(getStreamers()),
+      streams: streams,
       users: await getUsersInfo(usersIds),
       games: await getGames(gamesId),
     }, // will be passed to the page component as props
