@@ -14,7 +14,8 @@ const ZLAN_GAMES = [
   "506458", // overcooked 2
   "493057", // PUBG
   "28605", // shootmania
-  "493036", // worms
+  "493036", // worms,
+  "509663", // Special event
 ];
 
 const ZLAN_GAME_FILTER_KEY = "ZLAN_GAME_FILTER";
