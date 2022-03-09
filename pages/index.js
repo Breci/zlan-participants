@@ -6,16 +6,17 @@ import { useEffect, useMemo, useState } from "preact/hooks";
 import Switch from "../ui/Switch";
 
 const ZLAN_GAMES = [
-  "512988", // AOE II
-  "492553", // CIV VI
-  "495764", // Golf it
-  "512086", // heave ho
-  "27471", // Minecraft
-  "506458", // overcooked 2
-  "493057", // PUBG
-  "28605", // shootmania
-  "493036", // worms,
-  "509663", // Special event
+  "30921", // rocket league
+  "493036", // worms
+  "633127529", // riders republic
+  "1286420756", // pro soccer online
+  "512980", // fall guys
+  "", // zutom
+  "512953", // elden ring
+  "511224", // apex legend
+  "498482", // AOE 4
+  "1086433424", // hot wheels
+  "1716516651", // hot wheel (duplicate game)
 ];
 
 const ZLAN_GAME_FILTER_KEY = "ZLAN_GAME_FILTER";
