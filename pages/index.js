@@ -2,7 +2,7 @@ import Head from "next/head";
 import styles from "../styles/Home.module.scss";
 import { getGames, getLiveStreams, getUsersInfo } from "../twitch";
 import { getStreamers } from "../utils";
-import { useEffect, useMemo, useState } from "preact/hooks";
+import { useEffect, useMemo, useState } from "react";
 import Switch from "../ui/Switch";
 
 const ZLAN_GAMES = [
@@ -91,7 +91,7 @@ export default function Home({ streams, users, games }) {
               >
                 <div
                   className={styles["anim-container"]}
-                  style="position: relative"
+                  style={{ position: "relative" }}
                 >
                   <div className={styles["top-left-corner"]}></div>
                   <div className={styles["left-side"]}></div>
