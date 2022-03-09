@@ -15,18 +15,18 @@
   position: relative;
   padding-left: 0.25rem;
   padding-right: 0.25rem;
-  border: solid 1px #0ce840;
+  border: solid 1px #9CFF00;
   transition: background-color 0.2s ease-in-out;
 
   &.labelChecked{
-    background-color: #0ce840;
+    background-color: #9CFF00;
     .circle {
       background-color: black;
       transform: translateX(80%);
     }
   }
   .circle {
-    background-color: #0ce840;
+    background-color:#9CFF00;
   }
   &.disabled {
     opacity: 0.5;

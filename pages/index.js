@@ -55,7 +55,9 @@ export default function Home({ streams, users, games }) {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>ZLAN</h1>
+        <h1 className={styles.title}>
+          <img src="https://www.z-lan.fr/wp-content/uploads/2022/02/logo_zlan_white.svg" />
+        </h1>
 
         <div className={styles.listHeader}>
           <div className={styles.description}>Participants</div>
