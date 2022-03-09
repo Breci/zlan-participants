@@ -144,6 +144,7 @@ export default function Home({ streams, users, games }) {
 
 export async function getServerSideProps(context) {
   const streams = await getLiveStreams(getStreamers());
+  streams.sort((a, b) => b.viewer_count - a.viewer_count);
   const usersIds = streams.map((stream) => stream.user_id);
   const gamesId = Array.from(new Set(streams.map((stream) => stream.game_id)));
   return {
