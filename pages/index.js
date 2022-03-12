@@ -11,7 +11,7 @@ const ZLAN_GAMES = [
   "633127529", // riders republic
   "1286420756", // pro soccer online
   "512980", // fall guys
-  "", // zutom
+  "325783189", // zutom
   "512953", // elden ring
   "511224", // apex legend
   "498482", // AOE 4
